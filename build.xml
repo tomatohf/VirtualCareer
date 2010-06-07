@@ -1,0 +1,81 @@
+<project name="VirtualCareer" default="frun" basedir=".">
+	
+	<property name="scala.home.dir" value="/opt/local/share/scala-2.8" />
+	<property name="scala-compiler.jar" value="${scala.home.dir}/lib/scala-compiler.jar" />
+	<property name="scala-library.jar" value="${scala.home.dir}/lib/scala-library.jar" />
+	<property name="scala-dbc.jar" value="${scala.home.dir}/lib/scala-dbc.jar" />
+	<property name="scala-swing.jar" value="${scala.home.dir}/lib/scala-swing.jar" />
+	
+	<property name="prolog.lib.dir" value="/opt/local/lib/swipl-5.8.3/lib/i386-darwin10.3.0" />
+	
+	
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="lib.dir" value="${basedir}/lib" />
+	<property name="classes.dir" value="${basedir}/classes" />
+	<property name="dist.dir" value="${basedir}/dist" />
+	
+	<property name="main.class" value="com.qiaobutang.career.Main" />
+	
+	<path id="cp">
+		<pathelement location="${scala-library.jar}" />
+		
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		
+		<pathelement location="${classes.dir}" />
+	</path>
+	
+
+	<target name="init">
+		<taskdef resource="scala/tools/ant/antlib.xml">
+			<classpath>
+				<pathelement location="${scala-compiler.jar}" />
+				<pathelement location="${scala-library.jar}" />
+			</classpath>
+		</taskdef>
+	</target>
+	
+	
+	<target name="compile" depends="init">
+		<mkdir dir="${classes.dir}" />
+		
+		<scalac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="cp" deprecation="yes">
+			<include name="**/*.scala" />
+		</scalac>
+	</target>
+	
+	
+	<target name="fcompile" depends="init">
+		<mkdir dir="${classes.dir}" />
+		
+		<fsc srcdir="${src.dir}" destdir="${classes.dir}" classpathref="cp" deprecation="yes">
+			<include name="**/*.scala" />
+		</fsc>
+	</target>
+	
+	
+	<target name="clean">
+		<delete dir="${classes.dir}" />
+		<delete dir="${dist.dir}" />
+	</target>
+	
+	
+	<target name="exec">
+		<java classname="${main.class}" classpathref="cp" fork="true">
+			<sysproperty key="java.library.path" value="${prolog.lib.dir}" />
+		</java>
+	</target>
+	
+	
+	<target name="dist" depends="clean,compile">
+		<mkdir dir="${dist.dir}" />
+		
+		<jar destfile="${dist.dir}/VirtualCareer.jar" basedir="${classes.dir}" />
+	</target>
+	
+	
+	<target name="run" depends="compile,exec"></target>
+	<target name="frun" depends="fcompile,exec"></target>
+	
+</project>
