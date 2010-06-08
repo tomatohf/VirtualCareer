@@ -1,19 +1,19 @@
 % 产品
 % 	Apple / ThinkPad / HP / 宏基 / 神舟
 % VOC
-% 	价格
-% 	品牌
-% 	性能配置
-% 	存储容量
-% 	续航时间
-% 	质量
-% 	售后服务
-% 	屏幕大小
-% 	颜色
-% 	赠送的配件
+% 	价格 (price)
+% 	品牌 (brand)
+% 	内存 (memory)
+% 	硬盘 (disk)
+% 	电池 (battery)
+% 	质量 (quality)
+% 	售后 (service)
+% 	屏幕 (screen)
+% 	颜色 (color)
+% 	配件 (fitting)
 %
-% 	体力
-% 	关系程度
+% 	体力 (stamina)
+% 	心情 (mood)
 %
 % 买点
 % 	性能配置
