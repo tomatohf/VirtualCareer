@@ -3,7 +3,9 @@ package com.qiaobutang.career
 abstract class Role
 
 class CustomerRole(val product:Product) extends Role {
-	var voc = new VOC(product.criteria)
+	val vocs = (Map[Symbol, VOC]() /: product.competitors) {
+		(map, sym) => map + (sym -> new VOC(product.criteria))
+	}
 }
 
 class SellerRole extends Role {

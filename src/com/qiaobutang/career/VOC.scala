@@ -3,17 +3,24 @@ package com.qiaobutang.career
 import scala.collection.mutable.{Map, HashMap}
 
 class VOC(criteria:List[Symbol]) {
-	private case class View(v:Int, w:Int, p:Int) {
-		require(v >= 0 && v <= 100)
-		require(w >= 0)
-		require(p >= 0 && p <= 1)
+	protected case class View(value:Int, possibility:Int, weight:Int) {
+		require(value >= 0 && value <= 100)
+		require(possibility >= 0 && possibility <= 1)
+		require(weight >= 0)
 	}
 	
-	private val views = (Map[Symbol, View]() /: criteria) {
-		(map, sym) => map + (sym -> View(0, 0, 1))
+	protected val views = (Map[Symbol, View]() /: criteria) {
+		(map, sym) => map + (sym -> View(0, 1, 0))
 	}
+	
 	
 	def weightedAverage = {
-		1
+		val (values, weights) = ((0, 0) /: views) {
+			(sum, voc) => {
+				val View(value, possibility, weight) = voc._2
+				(sum._1 + (value*possibility*weight), sum._2 + weight)
+			}
+		}
+		values.toFloat / weights
 	}
 }
