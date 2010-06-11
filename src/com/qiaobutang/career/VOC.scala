@@ -3,13 +3,13 @@ package com.qiaobutang.career
 import scala.collection.mutable.{Map, HashMap}
 
 class VOC(criteria:List[Symbol]) {
-	protected case class View(value:Int, possibility:Int, weight:Int) {
+	case class View(value:Int, possibility:Int, weight:Int) {
 		require(value >= 0 && value <= 100)
 		require(possibility >= 0 && possibility <= 1)
 		require(weight >= 0)
 	}
 	
-	protected val views = (Map[Symbol, View]() /: criteria) {
+	val views = (Map[Symbol, View]() /: criteria) {
 		(map, sym) => map + (sym -> View(0, 1, 0))
 	}
 	

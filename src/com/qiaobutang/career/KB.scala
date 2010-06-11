@@ -1,11 +1,11 @@
 package com.qiaobutang.career
 
-import jpl.Query
+import alice.tuprolog.Prolog
 
 class KB(private val location:String) {
+	private val prolog = new Prolog()
+	
 	def init {
-		new Query(
-			"reconsult('" + location + "')"
-		).hasSolution()
+		println(prolog.isHalted)
 	}
 }

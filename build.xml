@@ -6,7 +6,9 @@
 	<property name="scala-dbc.jar" value="${scala.home.dir}/lib/scala-dbc.jar" />
 	<property name="scala-swing.jar" value="${scala.home.dir}/lib/scala-swing.jar" />
 	
+	<!--
 	<property name="prolog.lib.dir" value="/opt/local/lib/swipl-5.8.3/lib/i386-darwin10.3.0" />
+	-->
 	
 	
 	<property name="src.dir" value="${basedir}/src" />
@@ -63,7 +65,9 @@
 	
 	<target name="exec">
 		<java classname="${main.class}" classpathref="cp" fork="true">
+			<!--
 			<sysproperty key="java.library.path" value="${prolog.lib.dir}" />
+			-->
 		</java>
 	</target>
 	

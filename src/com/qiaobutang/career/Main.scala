@@ -6,4 +6,5 @@ object Main {
 		val kb = new KB("prolog/backgrounds.pl")
 		kb.init
 	}
+	
 }
