@@ -1,9 +1,19 @@
 % 买点 - 性能配置
 % 卖点 - 用途
 
-child_of(joe, ralf).
-child_of(mary, joe).
-child_of(steve, joe).
+product(computer, apple).
+product(computer, thinkpad).
+product(computer, hp).
+product(computer, acer).
+product(computer, hasee).
 
-descendent_of(X, Y) :- child_of(X, Y).
-descendent_of(X, Y) :- child_of(Z, Y), descendent_of(X, Z).
+criteria(computer, price).
+criteria(computer, brand).
+criteria(computer, memory).
+criteria(computer, disk).
+criteria(computer, battery).
+criteria(computer, quality).
+criteria(computer, service).
+criteria(computer, screen).
+criteria(computer, color).
+criteria(computer, fitting).
