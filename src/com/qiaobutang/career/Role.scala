@@ -13,10 +13,12 @@ class CustomerRole(
 	private val publicKB:KB,
 	private val privateKB:KB
 ) extends Role {
-	
-//	val vocs = (Map[String, VOC]() /: product.competitors) {
-//		(map, sym) => map + (sym -> new VOC(product.criteria))
-//	}
+	private val vocs = {
+		val criteria = publicKB.collectCriteria(productCatalog)
+		(Map[String, VOC]() /: publicKB.collectProducts(productCatalog)) {
+			(map, sym) => map + (sym -> new VOC(criteria))
+		}
+	}
 }
 
 class SellerRole extends Role {

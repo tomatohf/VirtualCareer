@@ -10,7 +10,9 @@ object Main {
 		
 		val customer = new CustomerRole(productCatalog, kb, new KB("prolog/customer.pl"))
 		
-		kb.collectProducts("computer").foreach(println _)
+		kb.collectProducts(productCatalog).foreach(println _)
+		println("----------")
+		kb.collectCriteria(productCatalog).foreach(println _)
 	}
 	
 }

@@ -17,18 +17,26 @@ class KB(private val location:String) {
 	)
 	engine.setTheory(new Theory(new FileInputStream(location)))
 	
+	private def getAllVarValues(query:String, varNames:List[String]) = {
+		val result = engine.solve(query)
+		if (result.isSuccess) {
+			def collect(info:SolveInfo):List[Map[String, String]] = {
+				val one = (Map[String, String]() /: varNames) {
+					(map, varName) => map + (varName -> info.getVarValue(varName).toString)
+				}
+				if (info.hasOpenAlternatives)
+					one :: collect(engine.solveNext)
+				else
+					one :: Nil
+			}
+			collect(result)
+		}
+		else
+			Nil
+	}
+	
 	
 	def getEngine = engine
-	
-	def collectProducts(catalog:String) = {
-		def extractInfo(info:SolveInfo):List[String] = {
-			if (!info.hasOpenAlternatives)
-				List(info.getVarValue("X").toString)
-			else
-				info.getVarValue("X").toString :: extractInfo(engine.solveNext)
-		}
-		
-		val info = engine.solve("product(" + catalog + ", X).")
-		extractInfo(info)
-	}
+	def collectProducts(catalog:String) = getAllVarValues("product(" + catalog + ", X).", List("X")).map(_("X"))
+	def collectCriteria(catalog:String) = getAllVarValues("criteria(" + catalog + ", X).", List("X")).map(_("X"))
 }
