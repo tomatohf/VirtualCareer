@@ -39,4 +39,9 @@ class KB(private val location:String) {
 	def getEngine = engine
 	def collectProducts(catalog:String) = getAllVarValues("product(" + catalog + ", X).", List("X")).map(_("X"))
 	def collectCriteria(catalog:String) = getAllVarValues("criteria(" + catalog + ", X).", List("X")).map(_("X"))
+	def collectWeights(catalog:String) = {
+		(Map[String, Int]() /: getAllVarValues("criteria_weight(" + catalog + ", X, Y).", List("X", "Y"))) {
+			(map, varValues) => map + (varValues("X") -> varValues("Y").toInt)
+		}
+	}
 }

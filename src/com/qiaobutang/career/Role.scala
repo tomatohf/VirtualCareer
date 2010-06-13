@@ -15,8 +15,13 @@ class CustomerRole(
 ) extends Role {
 	private val vocs = {
 		val criteria = publicKB.collectCriteria(productCatalog)
+		var weights = privateKB.collectWeights(productCatalog)
 		(Map[String, VOC]() /: publicKB.collectProducts(productCatalog)) {
-			(map, sym) => map + (sym -> new VOC(criteria))
+			(map, sym) => {
+				val voc = new VOC(criteria)
+				weights.foreach(t => voc.setWeight(t._1, t._2))
+				map + (sym -> voc)
+			}
 		}
 	}
 }

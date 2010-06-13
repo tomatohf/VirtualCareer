@@ -23,4 +23,10 @@ class VOC(criteria:List[String]) {
 		}
 		values.toFloat / weights
 	}
+	
+	def setWeight(criteria:String, weight:Int) {
+		val view = views(criteria)
+		views(criteria) = View(view.value, view.possibility, weight)
+		this
+	}
 }
