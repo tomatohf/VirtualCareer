@@ -16,6 +16,7 @@
 	
 	<path id="cp">
 		<pathelement location="${scala-library.jar}" />
+		<pathelement location="${scala-swing.jar}" />
 		
 		<fileset dir="${lib.dir}">
 			<include name="**/*.jar" />

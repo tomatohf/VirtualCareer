@@ -9,7 +9,7 @@ abstract class Role {
 	
 	def play(takenAction:Action) = {
 		val action = determine(takenAction)
-		action.apply
+		action()
 		action
 	}
 	def determine(takenAction:Action):Action
