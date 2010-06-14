@@ -6,6 +6,13 @@ abstract class Role {
 	
 	require(stamina >= 0 && stamina <= 100)
 	require(mood >= 0 && mood <= 100)
+	
+	def play(takenAction:Action) = {
+		val action = determine(takenAction)
+		action.apply
+		action
+	}
+	def determine(takenAction:Action):Action
 }
 
 class CustomerRole(
@@ -24,8 +31,18 @@ class CustomerRole(
 			}
 		}
 	}
+	
+	def determine(takenAction:Action) = {
+		new Action()
+	}
 }
 
-class SellerRole extends Role {
-	
+class SellerRole(
+	private val productCatalog:String,
+	private val publicKB:KB,
+	private val privateKB:KB
+) extends Role {
+	def determine(takenAction:Action) = {
+		new Action()
+	}
 }
