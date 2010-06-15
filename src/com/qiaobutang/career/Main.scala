@@ -2,6 +2,7 @@ package com.qiaobutang.career
 
 import scala.swing._
 import scala.swing.event._
+import java.awt.Toolkit
 
 object Main {
 	
@@ -13,27 +14,41 @@ object Main {
 		val seller = new SellerRole(productCatalog, kb, new KB("prolog/seller.pl"))
 		
 		
-		object app extends SimpleSwingApplication {
+		new SimpleSwingApplication {
 			def top = new MainFrame {
-				title = "First Swing App"
-				val button = new Button { text = "Click me" }
-				button.text = "请点我, 谢谢"
-				val label = new Label { text = "没点过" }
-				contents = new BoxPanel(Orientation.Vertical) {
-					contents += button
-					contents += label
-					border = Swing.EmptyBorder(30, 30, 10, 30)
+				title = "虚拟职场 原型展示 之 卖电脑"
+				val frameWidth = 640
+				val frameHeight = 480
+				val screenSize = Toolkit.getDefaultToolkit().getScreenSize()
+				location = new Point(
+					(screenSize.width - frameWidth) / 2,
+					(screenSize.height - frameHeight) / 2
+				)
+				
+				val textArea = new TextArea() {
+					lineWrap = true
+					editable = false
 				}
-				var nClicks = 0
-				reactions += {
-					case ButtonClicked(_) =>
-						nClicks += 1
-						label.text = "已点击 " + nClicks + " 次"
+				val button = new Button {
+					text = "请点我, 谢谢"
 				}
-				listenTo(button)
+				
+				contents = new SplitPane(
+					Orientation.Vertical,
+					new ScrollPane(textArea) {
+						verticalScrollBarPolicy = ScrollPane.BarPolicy.Always
+						horizontalScrollBarPolicy = ScrollPane.BarPolicy.Never
+					},
+					button
+				) {
+					dividerLocation = frameWidth * 3 / 5
+					oneTouchExpandable = false
+				}
+				size = new Dimension(frameWidth, frameHeight)
 			}
+			
+			main(args)
 		}
-		app.main(args)
 	}
 	
 }
