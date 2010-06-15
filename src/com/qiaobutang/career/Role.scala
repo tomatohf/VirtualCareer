@@ -6,13 +6,6 @@ abstract class Role {
 	
 	require(stamina >= 0 && stamina <= 100)
 	require(mood >= 0 && mood <= 100)
-	
-	def play(takenAction:Action) = {
-		val action = determine(takenAction)
-		action()
-		action
-	}
-	def determine(takenAction:Action):Action
 }
 
 class CustomerRole(
@@ -43,6 +36,6 @@ class SellerRole(
 	private val privateKB:KB
 ) extends Role {
 	def determine(takenAction:Action) = {
-		new Action()
+		List(new Action(), new Action(), new Action(), new Action(), new Action())
 	}
 }
