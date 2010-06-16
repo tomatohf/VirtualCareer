@@ -32,11 +32,6 @@ object Main {
 			val optionsContainer = new BoxPanel(Orientation.Vertical) {
 				border = Swing.EmptyBorder(8, 0, 20, 0)
 				val options = new ButtonGroup
-				for(i <- 1 to 10) {
-					val radio = new RadioButton("选项" + i)
-					contents += radio
-					options.buttons += radio
-				}
 			}
 			val button = new Button {
 				text = "确定"
@@ -47,7 +42,24 @@ object Main {
 			}
 			
 			def buttonClicked {
-				actionSelected()
+				button.enabled = false
+				println("selected radio: " + optionsContainer.options.selected)
+				fillOptions(actionSelected())
+				button.enabled = true
+			}
+			
+			def fillOptions(options:List[Array[String]]) {
+				optionsContainer.contents.clear()
+				optionsContainer.options.buttons.clear()
+				options.foreach(
+					option => {
+						val radio = new RadioButton(option(1))
+						optionsContainer.contents += radio
+						optionsContainer.options.buttons += radio
+					}
+				)
+				optionsContainer.revalidate()
+				optionsContainer.repaint()
 			}
 			
 			main(args)

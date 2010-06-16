@@ -5,7 +5,7 @@ class Action {
 		
 	}
 	
-	val now = new java.text.SimpleDateFormat("HHmmss").format(new java.util.Date())
-	def name = "action_" + now
-	def label = "行动_" + now
+	val rand = new java.util.Random().nextInt
+	def name = "action_" + rand
+	def label = "行动_" + rand
 }
