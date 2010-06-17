@@ -1,6 +1,6 @@
 package com.qiaobutang.career
 
-import scala.collection.mutable.{Map, HashMap}
+import scala.collection.mutable.Map
 
 class VOC(criteria:List[String]) {
 	case class View(value:Int, possibility:Int, weight:Int) {

@@ -13,18 +13,19 @@ object Main {
 		val customer = new CustomerRole(productCatalog, kb, new KB("prolog/customer.pl"))
 		val seller = new SellerRole(productCatalog, kb, new KB("prolog/seller.pl"))
 		
-		def actionSelected() = {
-			val sellerAction = new Action()
+		def actionSelected(sellerAction:Action) = {
 			sellerAction()
 			
 			val customerAction = customer.determine(sellerAction)
 			customerAction()
 			
-			seller.determine(customerAction).map(action => Array(action.name, action.label))
+			seller.determine(customerAction)
 		}
 		
+		val initActions = List(new GreetAction(), new ComplimentAction(), new ThankAction())
 		
-		new SimpleSwingApplication {
+		
+		val app = new SimpleSwingApplication {
 			val textArea = new TextArea() {
 				lineWrap = true
 				editable = false
@@ -40,20 +41,27 @@ object Main {
 			reactions += {
 				case ButtonClicked(_) => buttonClicked
 			}
+			fillOptions(initActions)
+			
+			class ActionRadioButton(val target:Action) extends RadioButton(target.title)
 			
 			def buttonClicked {
+				val selectedAction = optionsContainer.options.selected match {
+					case Some(radio) => radio.asInstanceOf[ActionRadioButton].target
+					case None => return
+				}
+				
 				button.enabled = false
-				println("selected radio: " + optionsContainer.options.selected)
-				fillOptions(actionSelected())
+				fillOptions(actionSelected(selectedAction))
 				button.enabled = true
 			}
 			
-			def fillOptions(options:List[Array[String]]) {
+			def fillOptions(actions:List[Action]) {
 				optionsContainer.contents.clear()
 				optionsContainer.options.buttons.clear()
-				options.foreach(
-					option => {
-						val radio = new RadioButton(option(1))
+				actions.foreach(
+					action => {
+						val radio = new ActionRadioButton(action)
 						optionsContainer.contents += radio
 						optionsContainer.options.buttons += radio
 					}
@@ -62,7 +70,6 @@ object Main {
 				optionsContainer.repaint()
 			}
 			
-			main(args)
 			
 			def top = new MainFrame {
 				title = "虚拟职场 原型展示 之 卖电脑"
@@ -95,6 +102,8 @@ object Main {
 				size = new Dimension(frameWidth, frameHeight)
 			}
 		}
+		
+		app.main(args)
 	}
 	
 }

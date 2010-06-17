@@ -26,7 +26,7 @@ class CustomerRole(
 	}
 	
 	def determine(takenAction:Action) = {
-		new Action()
+		new ThankAction()
 	}
 }
 
@@ -36,6 +36,6 @@ class SellerRole(
 	private val privateKB:KB
 ) extends Role {
 	def determine(takenAction:Action) = {
-		List(new Action(), new Action(), new Action(), new Action(), new Action())
+		List(new GreetAction(), new ComplimentAction(), new ThankAction())
 	}
 }
