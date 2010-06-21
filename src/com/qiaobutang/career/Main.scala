@@ -19,6 +19,8 @@ object Main {
 			val customerAction = customer.determine(sellerAction).head
 			customerAction()
 			
+			Output.default.append("")
+			
 			seller.determine(customerAction)
 		}
 		
@@ -30,6 +32,7 @@ object Main {
 				lineWrap = true
 				editable = false
 			}
+			Output.default = new TextAreaOutput(textArea)
 			val optionsContainer = new BoxPanel(Orientation.Vertical) {
 				border = Swing.EmptyBorder(8, 0, 20, 0)
 				val options = new ButtonGroup

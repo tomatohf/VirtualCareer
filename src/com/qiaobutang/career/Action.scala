@@ -23,6 +23,10 @@ abstract class Action {
 	def role:Role
 	def title:String
 	
+	def output(text:String) {
+		Output.default.append(role.name + ": " + text)
+	}
+	
 	def perform
 	def apply() {
 		perform
@@ -34,7 +38,7 @@ class GreetAction(val role:Role) extends Action {
 	val title = "打招呼"
 	val descriptions = List()
 	def perform {
-		println(title + " executed")
+		output(title + " executed")
 	}
 }
 
@@ -42,7 +46,7 @@ class ComplimentAction(val role:Role) extends Action {
 	val title = "称赞对方"
 	val descriptions = List()
 	def perform {
-		println(title + " executed")
+		output(title + " executed")
 	}
 }
 
@@ -50,6 +54,6 @@ class ThankAction(val role:Role) extends Action {
 	val title = "感谢对方"
 	val descriptions = List()
 	def perform {
-		println(title + " executed")
+		output(title + " executed")
 	}
 }
