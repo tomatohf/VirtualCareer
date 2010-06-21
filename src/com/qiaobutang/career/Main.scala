@@ -10,19 +10,19 @@ object Main {
 		val productCatalog = "computer"
 		val kb = new KB("prolog/backgrounds.pl")
 		
-		val customer = new CustomerRole(productCatalog, kb, new KB("prolog/customer.pl"))
-		val seller = new SellerRole(productCatalog, kb, new KB("prolog/seller.pl"))
+		val customer = new CustomerRole("客户", productCatalog, kb, new KB("prolog/customer.pl"))
+		val seller = new SellerRole("小堂", productCatalog, kb, new KB("prolog/seller.pl"))
 		
 		def actionSelected(sellerAction:Action) = {
 			sellerAction()
 			
-			val customerAction = customer.determine(sellerAction)
+			val customerAction = customer.determine(sellerAction).head
 			customerAction()
 			
 			seller.determine(customerAction)
 		}
 		
-		val initActions = List(new GreetAction(), new ComplimentAction(), new ThankAction())
+		val initActions = List(new GreetAction(seller), new ComplimentAction(seller), new ThankAction(seller))
 		
 		
 		val app = new SimpleSwingApplication {

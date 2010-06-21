@@ -1,14 +1,18 @@
 package com.qiaobutang.career
 
-abstract class Role {
+abstract class Role() {
+	def name:String
+	
 	protected var stamina = 100
 	protected var mood = 100
-	
 	require(stamina >= 0 && stamina <= 100)
 	require(mood >= 0 && mood <= 100)
+	
+	def determine(takenAction:Action):List[Action]
 }
 
 class CustomerRole(
+	val name:String,
 	private val productCatalog:String,
 	private val publicKB:KB,
 	private val privateKB:KB
@@ -26,16 +30,17 @@ class CustomerRole(
 	}
 	
 	def determine(takenAction:Action) = {
-		new ThankAction()
+		List(new ThankAction(this))
 	}
 }
 
 class SellerRole(
+	val name:String,
 	private val productCatalog:String,
 	private val publicKB:KB,
 	private val privateKB:KB
 ) extends Role {
 	def determine(takenAction:Action) = {
-		List(new GreetAction(), new ComplimentAction(), new ThankAction())
+		List(new GreetAction(this), new ComplimentAction(this), new ThankAction(this))
 	}
 }
