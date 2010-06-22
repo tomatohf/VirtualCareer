@@ -24,7 +24,7 @@ abstract class Action {
 	def title:String
 	
 	def output(text:String) {
-		Output.default.append(role.name + ": " + text)
+		Output.default.append(role.name + ":    " + text)
 	}
 	
 	def perform

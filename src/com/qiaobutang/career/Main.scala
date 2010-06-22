@@ -19,8 +19,6 @@ object Main {
 			val customerAction = customer.determine(sellerAction).head
 			customerAction()
 			
-			Output.default.append("")
-			
 			seller.determine(customerAction)
 		}
 		
@@ -35,7 +33,11 @@ object Main {
 			Output.default = new TextAreaOutput(textArea)
 			val optionsContainer = new BoxPanel(Orientation.Vertical) {
 				border = Swing.EmptyBorder(8, 0, 20, 0)
-				val options = new ButtonGroup
+				var options = new ButtonGroup
+				def clear {
+					contents.clear()
+					options = new ButtonGroup
+				}
 			}
 			val button = new Button {
 				text = "确定"
@@ -60,8 +62,7 @@ object Main {
 			}
 			
 			def fillOptions(actions:List[Action]) {
-				optionsContainer.contents.clear()
-				optionsContainer.options.buttons.clear()
+				optionsContainer.clear
 				actions.foreach(
 					action => {
 						val radio = new ActionRadioButton(action)

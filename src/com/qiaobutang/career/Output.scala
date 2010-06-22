@@ -1,6 +1,7 @@
 package com.qiaobutang.career
 
 object Output {
+	val newline = "\n"
 	var default:Output = ConsoleOutput
 }
 
@@ -14,5 +15,5 @@ object ConsoleOutput extends Output {
 
 import scala.swing.TextArea
 class TextAreaOutput(private val textArea:TextArea) extends Output {
-	def append(text:String) { textArea.append(text + "\n") }
+	def append(text:String) { textArea.append(text + Output.newline + Output.newline) }
 }
