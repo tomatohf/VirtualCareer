@@ -1,6 +1,6 @@
 package com.qiaobutang.career
 
-abstract class Role() {
+abstract class Role extends StateMachine {
 	def name:String
 	
 	protected var stamina = 100

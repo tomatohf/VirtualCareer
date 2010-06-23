@@ -26,7 +26,7 @@ object Main {
 		
 		
 		val app = new SimpleSwingApplication {
-			val textArea = new TextArea() {
+			val textArea = new TextArea {
 				lineWrap = true
 				editable = false
 			}
@@ -35,7 +35,7 @@ object Main {
 				border = Swing.EmptyBorder(8, 0, 20, 0)
 				var options = new ButtonGroup
 				def clear {
-					contents.clear()
+					contents.clear
 					options = new ButtonGroup
 				}
 			}
@@ -70,8 +70,8 @@ object Main {
 						optionsContainer.options.buttons += radio
 					}
 				)
-				optionsContainer.revalidate()
-				optionsContainer.repaint()
+				optionsContainer.revalidate
+				optionsContainer.repaint
 			}
 			
 			
@@ -79,7 +79,7 @@ object Main {
 				title = "虚拟职场 原型展示 之 卖电脑"
 				val frameWidth = 960
 				val frameHeight = 600
-				val screenSize = Toolkit.getDefaultToolkit().getScreenSize()
+				val screenSize = Toolkit.getDefaultToolkit.getScreenSize
 				location = new Point(
 					(screenSize.width - frameWidth) / 2,
 					(screenSize.height - frameHeight) / 2
