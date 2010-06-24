@@ -30,8 +30,28 @@ abstract class State {
 
 object IdleState extends State { def apply {} }
 
-class AbcState(protected val role:Role) extends State {
-	def apply {
-		
+class HierarchyState(protected val role:Role) extends State with StateMachine {
+	def beforeEnter {}
+	def afterEnter {}
+	override def enter {
+		beforeEnter
+		currentState.enter
+		afterEnter
+	}
+	
+	def beforeExit {}
+	def afterExit {}
+	override def exit {
+		beforeExit
+		currentState.exit
+		afterExit
+	}
+	
+	def beforeApply {}
+	def afterApply {}
+	override def apply {
+		beforeApply
+		super.apply
+		afterApply
 	}
 }
