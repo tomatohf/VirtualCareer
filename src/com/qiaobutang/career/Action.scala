@@ -1,5 +1,7 @@
 package com.qiaobutang.career
 
+import Helper._
+
 object Action {
 	import scala.collection.mutable.HashMap
 	type Creator = (Role, Array[String]) => Action
@@ -7,6 +9,7 @@ object Action {
 	def register (name:String) (creator: Creator) { registration.put(name, creator) }
 	def unregister (name:String) { registration.remove(name) }
 	
+	register ("appear") { (role, args) => new AppearAction(role) }
 	register ("greet") { (role, args) => new GreetAction(role) }
 	register ("compliment") { (role, args) => new ComplimentAction(role) }
 	register ("thank") { (role, args) => new ThankAction(role) }
@@ -24,7 +27,10 @@ abstract class Action {
 	def title:String
 	
 	def output(text:String) {
-		Output.default.append(role.name + ":    " + text)
+		if (Output.default.isInstanceOf[RoleTextAreaOutput])
+			Output.default.asInstanceOf[RoleTextAreaOutput].appendBy(text, role)
+		else
+			Output.default.append(role.privateKB.name(role.id).getOrElse(role.label) + ":    " + text)
 	}
 	
 	def perform
@@ -34,9 +40,18 @@ abstract class Action {
 }
 
 
+class AppearAction(val role:Role) extends Action {
+	val title = "出现"
+	def perform {
+		val gender = role.privateKB.gender(role.id)
+		if (gender.isEmpty) error("One must know own gender")
+		
+		output("(一位年轻的" + gender_title(gender.get) + ")走进店里")
+	}
+}
+
 class GreetAction(val role:Role) extends Action {
 	val title = "打招呼"
-	val descriptions = List()
 	def perform {
 		output(title + " executed")
 	}
@@ -44,7 +59,6 @@ class GreetAction(val role:Role) extends Action {
 
 class ComplimentAction(val role:Role) extends Action {
 	val title = "称赞对方"
-	val descriptions = List()
 	def perform {
 		output(title + " executed")
 	}
@@ -52,7 +66,6 @@ class ComplimentAction(val role:Role) extends Action {
 
 class ThankAction(val role:Role) extends Action {
 	val title = "感谢对方"
-	val descriptions = List()
 	def perform {
 		output(title + " executed")
 	}

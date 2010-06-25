@@ -8,10 +8,20 @@ object Main {
 	
 	def main(args: Array[String]) {
 		val productCatalog = "computer"
-		val kb = new KB("prolog/backgrounds.pl")
+		val kb = new PublicKB("prolog/backgrounds.pl")
 		
-		val customer = new CustomerRole("客户", productCatalog, kb, new KB("prolog/customer.pl"))
-		val seller = new SellerRole("小堂", productCatalog, kb, new KB("prolog/seller.pl"))
+		val customer = new CustomerRole(
+			"customer",
+			productCatalog,
+			kb,
+			new PrivateKB("prolog/customer.pl")
+		)
+		val seller = new SellerRole(
+			"seller",
+			productCatalog,
+			kb,
+			new PrivateKB("prolog/seller.pl")
+		)
 		
 		def actionSelected(sellerAction:Action) = {
 			sellerAction()
@@ -22,15 +32,13 @@ object Main {
 			seller.determine(customerAction)
 		}
 		
-		val initActions = List(new GreetAction(seller), new ComplimentAction(seller), new ThankAction(seller))
-		
 		
 		val app = new SimpleSwingApplication {
 			val textArea = new TextArea {
 				lineWrap = true
 				editable = false
 			}
-			Output.default = new TextAreaOutput(textArea)
+			Output.default = new RoleTextAreaOutput(textArea, seller)
 			val optionsContainer = new BoxPanel(Orientation.Vertical) {
 				border = Swing.EmptyBorder(8, 0, 20, 0)
 				var options = new ButtonGroup
@@ -46,7 +54,10 @@ object Main {
 			reactions += {
 				case ButtonClicked(_) => buttonClicked
 			}
-			fillOptions(initActions)
+			
+			val appearAction = Action("appear", customer, "true")
+			appearAction()
+			fillOptions(seller.determine(appearAction))
 			
 			class ActionRadioButton(val target:Action) extends RadioButton(target.title)
 			

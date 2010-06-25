@@ -1,7 +1,10 @@
 package com.qiaobutang.career
 
 abstract class Role extends StateMachine {
-	def name:String
+	def label:String
+	def id:String
+	def publicKB:PublicKB
+	def privateKB:PrivateKB
 	
 	protected var stamina = 100
 	protected var mood = 100
@@ -12,11 +15,12 @@ abstract class Role extends StateMachine {
 }
 
 class CustomerRole(
-	val name:String,
+	val id:String,
 	private val productCatalog:String,
-	private val publicKB:KB,
-	private val privateKB:KB
+	val publicKB:PublicKB,
+	val privateKB:PrivateKB
 ) extends Role {
+	val label = "客户"
 	private val vocs = {
 		val criteria = publicKB.collectCriteria(productCatalog)
 		var weights = privateKB.collectWeights(productCatalog)
@@ -35,11 +39,13 @@ class CustomerRole(
 }
 
 class SellerRole(
-	val name:String,
+	val id:String,
 	private val productCatalog:String,
-	private val publicKB:KB,
-	private val privateKB:KB
+	val publicKB:PublicKB,
+	val privateKB:PrivateKB
 ) extends Role {
+	val label = "销售员"
+	
 	def determine(takenAction:Action) = {
 		List(new GreetAction(this), new ComplimentAction(this), new ThankAction(this))
 	}

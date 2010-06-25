@@ -17,3 +17,12 @@ import scala.swing.TextArea
 class TextAreaOutput(private val textArea:TextArea) extends Output {
 	def append(text:String) { textArea.append(text + Output.newline + Output.newline) }
 }
+
+class RoleTextAreaOutput(
+	private val textArea:TextArea,
+	private val role:Role
+) extends TextAreaOutput(textArea) {
+	def appendBy(text:String, by:Role) {
+		append(role.privateKB.name(by.id).getOrElse(by.label) + ":    " + text)
+	}
+}
