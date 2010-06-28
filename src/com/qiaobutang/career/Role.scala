@@ -47,6 +47,8 @@ class SellerRole(
 	val label = "销售员"
 	
 	def determine(takenAction:Action) = {
+		takenAction.effect(this)
+		
 		List(new GreetAction(this), new ComplimentAction(this), new ThankAction(this))
 	}
 }

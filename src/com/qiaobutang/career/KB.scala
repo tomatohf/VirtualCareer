@@ -85,15 +85,21 @@ class PrivateKB(protected val location:String) extends KB {
 		map => {
 			val familyName = map("X")
 			val y = map("Y")
-			val givenName = if (y != "Y") y else gender(roleId) match {
-				case Some(g) => gender_title(g)
+			val givenName = if (y != "Y") y else getGender(roleId) match {
+				case Some(gender) => gender_title(gender)
 				case None => ""
 			} 
 			familyName + givenName
 		}
 	}
 	
-	def gender(roleId:String) = handleFirstVarValues("gender(" + roleId + ", X).", List("X")) {
+	def getGender(roleId:String) = handleFirstVarValues("gender(" + roleId + ", X).", List("X")) {
 		_("X").toInt > 0
+	}
+	def setGender(roleId:String, gender:Boolean) {
+		engine.solve("retractall(gender(" + roleId + ", _)).")
+		engine.addTheory(
+			new Theory("gender(" + roleId + ", " + (if (gender) 1 else 0) + ").")
+		)
 	}
 }

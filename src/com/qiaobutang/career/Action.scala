@@ -37,16 +37,24 @@ abstract class Action {
 	def apply() {
 		perform
 	}
+	
+	def effect(to:Role) {}
 }
 
 
 class AppearAction(val role:Role) extends Action {
 	val title = "出现"
 	def perform {
-		val gender = role.privateKB.gender(role.id)
-		if (gender.isEmpty) error("One must know own gender")
+		val gender = role.privateKB.getGender(role.id)
+		if (gender.isEmpty) return error("One must know own gender")
 		
 		output("(一位年轻的" + gender_title(gender.get) + ")走进店里")
+	}
+	override def effect(to:Role) {
+		val gender = role.privateKB.getGender(role.id)
+		if (gender.isEmpty) return error("One must know own gender")
+		
+		to.privateKB.setGender(role.id, gender.get)
 	}
 }
 
