@@ -5,10 +5,7 @@ trait StateMachine {
 	protected var currentState:State = IdleState
 	protected var previousState:State = IdleState
 	
-	def apply() {
-		globalState()
-		currentState()
-	}
+	def determine = globalState.determine ++ currentState.determine
 	
 	def changeState(newState:State) {
 		previousState = currentState
@@ -25,40 +22,26 @@ trait StateMachine {
 abstract class State {
 	def enter {}
 	def exit {}
-	def apply()
+	def determine:List[Action]
 }
 
-object IdleState extends State { def apply {} }
+object IdleState extends State { def determine = List() }
 
-class HierarchyState extends State with StateMachine {
-	def beforeEnter {}
-	def afterEnter {}
-	override def enter {
-		beforeEnter
-		currentState.enter
-		afterEnter
-	}
-	
-	def beforeExit {}
-	def afterExit {}
-	override def exit {
-		beforeExit
-		currentState.exit
-		afterExit
-	}
-	
-	def beforeApply {}
-	def afterApply {}
-	override def apply {
-		beforeApply
-		super.apply
-		afterApply
+class HierarchyState extends State with StateMachine
+
+
+class SellerRoleState(val seller:SellerRole) extends State {
+	def determine = {
+		List(
+			Action("wait_continue", seller)
+		)
 	}
 }
-
 
 class GreetState extends State {
-	def apply {
-		
+	def determine = {
+		List(
+			
+		)
 	}
 }

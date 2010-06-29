@@ -45,15 +45,13 @@ class SellerRole(
 	val privateKB:PrivateKB
 ) extends Role {
 	val label = "销售员"
+	globalState = new SellerRoleState(this)
 	
 	def determine(takenAction:Action) = {
 		takenAction.effect(this)
 		
-		takenAction match {
-			case AppearAction(role) => changeState(new GreetState)
-			case _ => // do nothing
-		}
+		changeState(new GreetState)
 		
-		List(new GreetAction(this), new ComplimentAction(this), new ThankAction(this))
+		determine
 	}
 }
