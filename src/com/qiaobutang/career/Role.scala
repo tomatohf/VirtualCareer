@@ -49,6 +49,11 @@ class SellerRole(
 	def determine(takenAction:Action) = {
 		takenAction.effect(this)
 		
+		takenAction match {
+			case AppearAction(role) => changeState(new GreetState)
+			case _ => // do nothing
+		}
+		
 		List(new GreetAction(this), new ComplimentAction(this), new ThankAction(this))
 	}
 }

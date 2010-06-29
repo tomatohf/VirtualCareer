@@ -42,7 +42,7 @@ abstract class Action {
 }
 
 
-class AppearAction(val role:Role) extends Action {
+case class AppearAction(role:Role) extends Action {
 	val title = "出现"
 	def perform {
 		val gender = role.privateKB.getGender(role.id)
@@ -58,21 +58,21 @@ class AppearAction(val role:Role) extends Action {
 	}
 }
 
-class GreetAction(val role:Role) extends Action {
+case class GreetAction(role:Role) extends Action {
 	val title = "打招呼"
 	def perform {
 		output(title + " executed")
 	}
 }
 
-class ComplimentAction(val role:Role) extends Action {
+case class ComplimentAction(role:Role) extends Action {
 	val title = "称赞对方"
 	def perform {
 		output(title + " executed")
 	}
 }
 
-class ThankAction(val role:Role) extends Action {
+case class ThankAction(role:Role) extends Action {
 	val title = "感谢对方"
 	def perform {
 		output(title + " executed")

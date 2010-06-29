@@ -59,6 +59,10 @@ abstract class KB {
 		val values = getFirstVarValues(query ,varNames)
 		if (values.size > 0) Some(handler(values.head)) else None
 	}
+	
+	protected def erase(clause:String) {
+		engine.solve("retractall(" + clause + ").")
+	}
 }
 
 class PublicKB(protected val location:String) extends KB {
@@ -97,7 +101,7 @@ class PrivateKB(protected val location:String) extends KB {
 		_("X").toInt > 0
 	}
 	def setGender(roleId:String, gender:Boolean) {
-		engine.solve("retractall(gender(" + roleId + ", _)).")
+		erase("gender(" + roleId + ", _)")
 		engine.addTheory(
 			new Theory("gender(" + roleId + ", " + (if (gender) 1 else 0) + ").")
 		)
