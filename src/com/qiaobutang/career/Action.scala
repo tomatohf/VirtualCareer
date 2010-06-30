@@ -4,9 +4,9 @@ import Helper._
 
 object Action {
 	import scala.collection.mutable.HashMap
-	type Creator = (Role, Array[String]) => Action
-	private val registration = HashMap[String, Creator]()
-	def register (name:String) (creator: Creator) { registration.put(name, creator) }
+	type Constructor = (Role, Array[String]) => Action
+	private val registration = HashMap[String, Constructor]()
+	def register (name:String) (constructor: Constructor) { registration.put(name, constructor) }
 	def unregister (name:String) { registration.remove(name) }
 	
 	register ("wait_continue") { (role, args) => new WaitContinueAction(role) }
@@ -17,7 +17,7 @@ object Action {
 	
 	def apply(name:String, role:Role, args:String *) = {
 		registration.get(name) match {
-			case Some(creator) => creator(role, args.toArray)
+			case Some(constructor) => constructor(role, args.toArray)
 			case None => error("Unregistered action: " + name)
 		}
 	}
