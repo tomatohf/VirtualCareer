@@ -3,29 +3,20 @@ package com.qiaobutang.career
 import Helper._
 
 object Action {
-	import scala.collection.mutable.HashMap
-	type Constructor = (Role, Array[String]) => Action
-	private val registration = HashMap[String, Constructor]()
-	def register (name:String) (constructor: Constructor) { registration.put(name, constructor) }
-	def unregister (name:String) { registration.remove(name) }
+	val PACKAGE_NAME = "com.qiaobutang.career"
+	val POSTFIX = "Action"
 	
-	register ("wait_continue") { (role, args) => new WaitContinueAction(role) }
-	register ("appear") { (role, args) => new AppearAction(role) }
-	register ("greet") { (role, args) => new GreetAction(role) }
-	register ("compliment") { (role, args) => new ComplimentAction(role) }
-	register ("thank") { (role, args) => new ThankAction(role) }
-	
-	def apply(name:String, role:Role, args:String *) = {
-		registration.get(name) match {
-			case Some(constructor) => constructor(role, args.toArray)
-			case None => error("Unregistered action: " + name)
-		}
-	}
+	def apply(role:Role, name:String, args:Any *) = 
+		Class.forName(PACKAGE_NAME + "." + camelize(name) + POSTFIX).getDeclaredConstructor(
+			classOf[Role], classOf[Array[Any]]
+		).newInstance(role, args.toArray).asInstanceOf[Action]
 }
 
 abstract class Action {
 	def role:Role
 	def title:String
+	
+	def name = underscore(this.getClass.getSimpleName).dropRight(Action.POSTFIX.size)
 	
 	def output(text:String) {
 		if (Output.default.isInstanceOf[RoleTextAreaOutput])
@@ -43,14 +34,14 @@ abstract class Action {
 }
 
 
-class WaitContinueAction(val role:Role) extends Action {
+class WaitContinueAction(val role:Role, args:Array[Any]) extends Action {
 	val title = "(什么也不做) 等待对方继续"
 	def perform {
 		output("(什么也没说) ... ...")
 	}
 }
 
-class AppearAction(val role:Role) extends Action {
+class AppearAction(val role:Role, args:Array[Any]) extends Action {
 	val title = "出现"
 	def perform {
 		val gender = role.privateKB.getGender(role.id)
@@ -67,7 +58,7 @@ class AppearAction(val role:Role) extends Action {
 	}
 }
 
-class GreetAction(role:Role) extends AppearAction(role) {
+class GreetAction(role:Role, args:Array[Any]) extends AppearAction(role, args) {
 	override val title = "打招呼"
 	override def perform {
 		output("你好")
@@ -78,14 +69,14 @@ class GreetAction(role:Role) extends AppearAction(role) {
 	}
 }
 
-class ComplimentAction(val role:Role) extends Action {
+class ComplimentAction(val role:Role, args:Array[Any]) extends Action {
 	val title = "称赞对方"
 	def perform {
 		output(title + " executed")
 	}
 }
 
-class ThankAction(val role:Role) extends Action {
+class ThankAction(val role:Role, args:Array[Any]) extends Action {
 	val title = "感谢对方"
 	def perform {
 		output(title + " executed")

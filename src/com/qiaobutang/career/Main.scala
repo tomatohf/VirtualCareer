@@ -55,7 +55,7 @@ object Main {
 				case ButtonClicked(_) => buttonClicked
 			}
 			
-			val appearAction = Action("appear", customer, "true")
+			val appearAction = Action(customer, "appear")
 			appearAction()
 			fillOptions(seller.determine(appearAction))
 			

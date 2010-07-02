@@ -1,5 +1,7 @@
 package com.qiaobutang.career
 
+import Helper._
+
 trait StateMachine {
 	protected var globalState:State = IdleState
 	protected var currentState:State = IdleState
@@ -19,26 +21,42 @@ trait StateMachine {
 	}
 }
 
+object State {
+	val PACKAGE_NAME = "com.qiaobutang.career"
+	val POSTFIX = "State"
+		
+	def apply(name:String, args:Any *) = 
+		Class.forName(PACKAGE_NAME + "." + camelize(name) + POSTFIX).getDeclaredConstructor(
+			classOf[Array[Any]]
+		).newInstance(args.toArray).asInstanceOf[State]
+}
+
 abstract class State {
 	def enter {}
 	def exit {}
 	def determine:List[Action]
+	
+	def name = underscore(this.getClass.getSimpleName).dropRight(State.POSTFIX.size)
 }
 
-object IdleState extends State { def determine = List() }
+object IdleState extends State {
+	def determine = List()
+}
 
 class HierarchyState extends State with StateMachine
 
 
-class SellerRoleState(val seller:SellerRole) extends State {
+class SellerRoleState(args:Array[Any]) extends State {
+	val seller = args(0).asInstanceOf[SellerRole]
+	
 	def determine = {
 		List(
-			Action("wait_continue", seller)
+			Action(seller, "wait_continue")
 		)
 	}
 }
 
-class GreetState extends State {
+class GreetState(args:Array[Any]) extends State {
 	def determine = {
 		List(
 			

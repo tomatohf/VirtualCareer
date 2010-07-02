@@ -34,7 +34,7 @@ class CustomerRole(
 	}
 	
 	def determine(takenAction:Action) = {
-		List(new ThankAction(this))
+		List(Action(this, "thank"))
 	}
 }
 
@@ -45,12 +45,12 @@ class SellerRole(
 	val privateKB:PrivateKB
 ) extends Role {
 	val label = "销售员"
-	globalState = new SellerRoleState(this)
+	globalState = State("seller_role", this)
 	
 	def determine(takenAction:Action) = {
 		takenAction.effect(this)
 		
-		changeState(new GreetState)
+		changeState(State("greet"))
 		
 		determine
 	}
