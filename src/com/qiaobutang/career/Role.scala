@@ -10,8 +10,6 @@ abstract class Role extends StateMachine {
 	protected var mood = 100
 	require(stamina >= 0 && stamina <= 100)
 	require(mood >= 0 && mood <= 100)
-	
-	def determine(takenAction:Action):List[Action]
 }
 
 class CustomerRole(
@@ -33,7 +31,7 @@ class CustomerRole(
 		}
 	}
 	
-	def determine(takenAction:Action) = {
+	override def determine = {
 		List(Action(this, "thank"))
 	}
 }
@@ -46,12 +44,4 @@ class SellerRole(
 ) extends Role {
 	val label = "销售员"
 	globalState = State(this, "seller_role")
-	
-	def determine(takenAction:Action) = {
-		takenAction.effect(this)
-		
-		changeState(State(this, "greet"))
-		
-		determine
-	}
 }

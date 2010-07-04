@@ -34,11 +34,11 @@ abstract class Action {
 	}
 	
 	def perform
-	def apply() {
-		perform
-	}
-	
 	def effect(to:Role) {}
+	def apply(toRoles:Role*) {
+		perform
+		toRoles.foreach(effect(_))
+	}
 }
 
 

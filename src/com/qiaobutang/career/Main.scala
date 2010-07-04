@@ -24,12 +24,11 @@ object Main {
 		)
 		
 		def actionSelected(sellerAction:Action) = {
-			sellerAction()
+			sellerAction(customer)
 			
-			val customerAction = customer.determine(sellerAction).head
-			customerAction()
+			customer.determine.head(seller)
 			
-			seller.determine(customerAction)
+			seller.determine
 		}
 		
 		
@@ -55,9 +54,8 @@ object Main {
 				case ButtonClicked(_) => buttonClicked
 			}
 			
-			val appearAction = Action(customer, "appear")
-			appearAction()
-			fillOptions(seller.determine(appearAction))
+			Action(customer, "appear")(seller)
+			fillOptions(seller.determine)
 			
 			class ActionRadioButton(val target:Action) extends RadioButton(target.title)
 			
