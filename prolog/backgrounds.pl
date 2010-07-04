@@ -1,5 +1,8 @@
 % 买点 - 性能配置
 % 卖点 - 用途
+% Action(话) 按性质分类: 主动陈述, 提问, 回答问题
+% Action/State 的具体实现代码都应该分为两个部分, 在代码中和在KB中
+% Action 改为执行时指定哪些人接收
 
 product(computer, apple).
 product(computer, thinkpad).

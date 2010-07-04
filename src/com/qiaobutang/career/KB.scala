@@ -106,4 +106,9 @@ class PrivateKB(protected val location:String) extends KB {
 			new Theory("gender(" + roleId + ", " + (if (gender) 1 else 0) + ").")
 		)
 	}
+	
+	def handleStateActions[ItemType] (stateName:String) (handler:String => ItemType) = 
+		getAllVarValues("state_action(" + stateName + ", X).", List("X")).map {
+			result => handler(result("X"))
+		}
 }

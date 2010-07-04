@@ -2,21 +2,29 @@ package com.qiaobutang.career
 
 import Helper._
 
-object Action {
+trait Factory {
 	val PACKAGE_NAME = "com.qiaobutang.career"
-	val POSTFIX = "Action"
+	val POSTFIX:String
+	type InstanceClass <: Object
 	
-	def apply(role:Role, name:String, args:Any *) = 
+	def apply(role:Role, name:String, args:Any*) = 
 		Class.forName(PACKAGE_NAME + "." + camelize(name) + POSTFIX).getDeclaredConstructor(
 			classOf[Role], classOf[Array[Any]]
-		).newInstance(role, args.toArray).asInstanceOf[Action]
+		).newInstance(role, args.toArray).asInstanceOf[InstanceClass]
+	
+	def name(ins:InstanceClass) = underscore(ins.getClass.getSimpleName).dropRight(POSTFIX.size+1)
+}
+
+object Action extends Factory {
+	val POSTFIX = "Action"
+	type InstanceClass = Action
 }
 
 abstract class Action {
 	def role:Role
 	def title:String
 	
-	def name = underscore(this.getClass.getSimpleName).dropRight(Action.POSTFIX.size)
+	def name = Action.name(this)
 	
 	def output(text:String) {
 		if (Output.default.isInstanceOf[RoleTextAreaOutput])

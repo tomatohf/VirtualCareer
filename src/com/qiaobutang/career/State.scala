@@ -2,12 +2,16 @@ package com.qiaobutang.career
 
 import Helper._
 
-trait StateMachine {
-	protected var globalState:State = IdleState
-	protected var currentState:State = IdleState
-	protected var previousState:State = IdleState
+trait Determinable {
+	def determine:List[Action]
+}
+
+trait StateMachine extends Determinable {
+	protected var globalState:State = EmptyState
+	protected var currentState:State = EmptyState
+	protected var previousState:State = EmptyState
 	
-	def determine = globalState.determine ++ currentState.determine
+	override def determine = globalState.determine ++ currentState.determine
 	
 	def changeState(newState:State) {
 		previousState = currentState
@@ -21,45 +25,36 @@ trait StateMachine {
 	}
 }
 
-object State {
-	val PACKAGE_NAME = "com.qiaobutang.career"
+object State extends Factory {
 	val POSTFIX = "State"
-		
-	def apply(name:String, args:Any *) = 
-		Class.forName(PACKAGE_NAME + "." + camelize(name) + POSTFIX).getDeclaredConstructor(
-			classOf[Array[Any]]
-		).newInstance(args.toArray).asInstanceOf[State]
+	type InstanceClass = State
 }
 
-abstract class State {
+abstract class State extends Determinable {
+	def role:Role
+	
 	def enter {}
 	def exit {}
-	def determine:List[Action]
-	
-	def name = underscore(this.getClass.getSimpleName).dropRight(State.POSTFIX.size)
-}
 
-object IdleState extends State {
-	def determine = List()
-}
-
-class HierarchyState extends State with StateMachine
-
-
-class SellerRoleState(args:Array[Any]) extends State {
-	val seller = args(0).asInstanceOf[SellerRole]
+	def name = State.name(this)
 	
 	def determine = {
-		List(
-			Action(seller, "wait_continue")
-		)
+		role.privateKB.handleStateActions[Action] (name) {
+			Action(role, _)
+		}
 	}
 }
 
-class GreetState(args:Array[Any]) extends State {
-	def determine = {
-		List(
-			
-		)
-	}
+object EmptyState extends State {
+	val role = null
+	override def determine = List()
+}
+
+abstract class HierarchyState extends State with StateMachine
+
+
+class SellerRoleState(val role:Role, args:Array[Any]) extends State {
+}
+
+class GreetState(val role:Role, args:Array[Any]) extends State {
 }

@@ -45,12 +45,12 @@ class SellerRole(
 	val privateKB:PrivateKB
 ) extends Role {
 	val label = "销售员"
-	globalState = State("seller_role", this)
+	globalState = State(this, "seller_role")
 	
 	def determine(takenAction:Action) = {
 		takenAction.effect(this)
 		
-		changeState(State("greet"))
+		changeState(State(this, "greet"))
 		
 		determine
 	}
