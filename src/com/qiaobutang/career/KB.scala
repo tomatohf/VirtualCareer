@@ -116,11 +116,21 @@ class PrivateKB(protected val location:String) extends KB {
 		)
 	}
 	
-	def handleStateActions[ItemType] (stateName:String) (handler:(String, List[String]) => ItemType) = 
+	def handleStateActions[ItemType] (stateName:String) (handler:(String, List[String]) => ItemType) = {
 		getAllVarValues("state_action(" + stateName + ", X, Y).", List("X", "Y")).map {
 			result => {
 				val args = result("Y")
 				handler(result("X"), if(args.toString == "Y") List() else args)
 			}
 		}
+	}
+	
+	def handleFirstStateTransition[ItemType] (stateName:String) (handler:(String, List[String]) => ItemType) = {
+		handleFirstVarValues("state_transition(" + stateName + ", X, Y).", List("X", "Y")) {
+			result => {
+				val args = result("Y")
+				handler(result("X"), if(args.toString == "Y") List() else args)
+			}
+		}
+	}
 }

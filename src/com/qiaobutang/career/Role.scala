@@ -44,4 +44,13 @@ class SellerRole(
 ) extends Role {
 	val label = "销售员"
 	globalState = State(this, "seller_role")
+	
+	override def determine = {
+		val state = privateKB.handleFirstStateTransition[State] (currentState.name) {
+			State(this, _, _:_*)
+		}
+		if(!state.isEmpty) changeState(state.get)
+		
+		super.determine
+	}
 }
