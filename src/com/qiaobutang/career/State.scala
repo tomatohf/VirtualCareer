@@ -40,7 +40,7 @@ abstract class State extends Determinable {
 	
 	def determine = {
 		role.privateKB.handleStateActions[Action] (name) {
-			Action(role, _)
+			Action(role, _, _:_*)
 		}
 	}
 }
@@ -53,8 +53,8 @@ object EmptyState extends State {
 abstract class HierarchyState extends State with StateMachine
 
 
-class SellerRoleState(val role:Role, args:Array[Any]) extends State {
+class SellerRoleState(val role:Role, args:Array[String]) extends State {
 }
 
-class GreetState(val role:Role, args:Array[Any]) extends State {
+class GreetState(val role:Role, args:Array[String]) extends State {
 }
