@@ -22,6 +22,7 @@ object Action extends Factory {
 
 abstract class Action {
 	def role:Role
+	def arguments:Array[String]
 	def title:String
 	
 	def name = Action.name(this)
@@ -37,19 +38,23 @@ abstract class Action {
 	def effect(to:Role) {}
 	def apply(toRoles:Role*) {
 		perform
-		toRoles.foreach(effect(_))
+		role.privateKB.record_action_done(role.id, name, arguments:_*)
+		
+		toRoles.foreach {
+			effect(_)
+		}
 	}
 }
 
 
-class WaitContinueAction(val role:Role, args:Array[String]) extends Action {
+class WaitContinueAction(val role:Role, val arguments:Array[String]) extends Action {
 	val title = "(什么也不做) 等待对方继续"
 	def perform {
 		output("(什么也没说) ... ...")
 	}
 }
 
-class AppearAction(val role:Role, args:Array[String]) extends Action {
+class AppearAction(val role:Role, val arguments:Array[String]) extends Action {
 	val title = "出现"
 	def perform {
 		val gender = role.privateKB.getGender(role.id)
@@ -66,7 +71,7 @@ class AppearAction(val role:Role, args:Array[String]) extends Action {
 	}
 }
 
-class GreetAction(role:Role, args:Array[String]) extends AppearAction(role, args) {
+class GreetAction(role:Role, arguments:Array[String]) extends AppearAction(role, arguments) {
 	override val title = "打招呼"
 	override def perform {
 		output("你好")
@@ -77,14 +82,14 @@ class GreetAction(role:Role, args:Array[String]) extends AppearAction(role, args
 	}
 }
 
-class ComplimentAction(val role:Role, args:Array[String]) extends Action {
+class ComplimentAction(val role:Role, val arguments:Array[String]) extends Action {
 	val title = "称赞对方"
 	def perform {
 		output(title + " executed")
 	}
 }
 
-class ThankAction(val role:Role, args:Array[String]) extends Action {
+class ThankAction(val role:Role, val arguments:Array[String]) extends Action {
 	val title = "感谢对方"
 	def perform {
 		output(title + " executed")

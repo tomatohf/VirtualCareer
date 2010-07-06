@@ -7,7 +7,7 @@ import java.io.FileInputStream
 import alice.tuprolog.{Prolog, Theory, Term, Struct, SolveInfo}
 
 abstract class KB {
-	protected val location:String
+	protected def locations:List[String]
 	
 	protected val engine = new Prolog(
 		Array(
@@ -17,7 +17,14 @@ abstract class KB {
 			"alice.tuprolog.lib.ISOLibrary"
 		)
 	)
-	engine.setTheory(new Theory(new FileInputStream(location)))
+	engine.setTheory(
+		(new Theory("") /: locations) {
+			(theory, filePath) => {
+				theory.append(new Theory(new FileInputStream(filePath)))
+				theory
+			}
+		}
+	)
 	
 	/**
 	 * @param count - Negative number, such as -1, means to get all
@@ -65,24 +72,29 @@ abstract class KB {
 		if (values.size > 0) Some(handler(values.head)) else None
 	}
 	
-	protected def erase(clause:String) {
-		engine.solve("retractall(" + clause + ").")
+	protected def forget(clause:String) { engine.solve("retractall(" + clause + ").") }
+	protected def remember(clause:String) { engine.addTheory(new Theory(clause)) }
+}
+
+class PublicKB(val location:String) extends {
+	protected val locations = List(location)
+} with KB {
+	def collectProducts(catalog:String) = {
+		getAllVarValues("product(" + catalog + ", X).", List("X")).map {
+			result => termAsString(result("X"))
+		}
+	}
+		
+	def collectCriteria(catalog:String) = {
+		getAllVarValues("criteria(" + catalog + ", X).", List("X")).map {
+			result => termAsString(result("X"))
+		}
 	}
 }
 
-class PublicKB(protected val location:String) extends KB {
-	def collectProducts(catalog:String) = 
-		getAllVarValues("product(" + catalog + ", X).", List("X")).map(
-			result => termAsString(result("X"))
-		)
-		
-	def collectCriteria(catalog:String) = 
-		getAllVarValues("criteria(" + catalog + ", X).", List("X")).map(
-			result => termAsString(result("X"))
-		)
-}
-
-class PrivateKB(protected val location:String) extends KB {
+class PrivateKB(val location:String) extends {
+	protected val locations = List("prolog/base/private.pl", location)
+} with KB {
 	def collectWeights(catalog:String) = {
 		(
 			Map[String, Int]() /: getAllVarValues(
@@ -96,13 +108,13 @@ class PrivateKB(protected val location:String) extends KB {
 	
 	def name(roleId:String) = handleFirstVarValues("name(" + roleId + ", X, Y).", List("X", "Y")) {
 		map => {
-			val familyName = map("X")
-			val y = map("Y")
-			val givenName = if (y.toString != "Y") y else getGender(roleId) match {
-				case Some(gender) => gender_title(gender)
-				case None => ""
-			} 
-			familyName + givenName
+			map("X") + {
+				val y:String = map("Y")
+				if (y != "Y") y else getGender(roleId) match {
+					case Some(gender) => gender_title(gender)
+					case None => ""
+				}
+			}
 		}
 	}
 	
@@ -110,10 +122,8 @@ class PrivateKB(protected val location:String) extends KB {
 		_("X").toInt > 0
 	}
 	def setGender(roleId:String, gender:Boolean) {
-		erase("gender(" + roleId + ", _)")
-		engine.addTheory(
-			new Theory("gender(" + roleId + ", " + (if (gender) 1 else 0) + ").")
-		)
+		forget("gender(" + roleId + ", _)")
+		remember("gender(" + roleId + ", " + (if (gender) 1 else 0) + ").")
 	}
 	
 	def handleStateActions[ItemType] (stateName:String) (handler:(String, List[String]) => ItemType) = {
@@ -132,5 +142,16 @@ class PrivateKB(protected val location:String) extends KB {
 				handler(result("X"), if(args.toString == "Y") List() else args)
 			}
 		}
+	}
+	
+	protected def counter = handleFirstVarValues("counter(X).", List("X"))(_("X").toInt).getOrElse(0)
+	protected def increase_counter = handleFirstVarValues("increase_counter(X).", List("X"))(_("X").toInt).get
+	
+	def record_action_done(roleId:String, action_name:String, args:String*) {
+		remember(
+			"action_done(" + 
+				Array(increase_counter, roleId, action_name, "["+args.mkString(",")+"]").mkString(",") + 
+			")."
+		)
 	}
 }
