@@ -41,7 +41,10 @@ abstract class Action {
 		role.privateKB.record_action_done(role.id, name, arguments:_*)
 		
 		toRoles.foreach {
-			effect(_)
+			toRole => {
+				effect(toRole)
+				toRole.privateKB.record_action_done(role.id, name, arguments:_*)
+			}
 		}
 	}
 }
