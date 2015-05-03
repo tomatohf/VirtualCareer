@@ -1,0 +1,9 @@
+.DS_Store
+
+.project
+.classpath
+.settings/*
+.scala_dependencies
+
+/classes/*
+/dist/*
